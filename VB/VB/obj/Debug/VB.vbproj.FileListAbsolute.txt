@@ -1,0 +1,102 @@
+C:\016117\113\113 test2\VB\VB\bin\Debug\VB.exe.config
+C:\016117\113\113 test2\VB\VB\bin\Debug\VB.exe
+C:\016117\113\113 test2\VB\VB\bin\Debug\VB.pdb
+C:\016117\113\113 test2\VB\VB\bin\Debug\VB.xml
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.vbproj.SuggestedBindingRedirects.cache
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.Form1.resources
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.Resources.resources
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.exe
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.xml
+C:\016117\113\113 test2\VB\VB\obj\Debug\VB.pdb
+C:\016117\109\exam2\VB\VB\bin\Debug\VB.exe.config
+C:\016117\109\exam2\VB\VB\bin\Debug\VB.exe
+C:\016117\109\exam2\VB\VB\bin\Debug\VB.pdb
+C:\016117\109\exam2\VB\VB\bin\Debug\VB.xml
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.vbproj.SuggestedBindingRedirects.cache
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.Form1.resources
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.Resources.resources
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.exe
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.xml
+C:\016117\109\exam2\VB\VB\obj\Debug\VB.pdb
+C:\016117\109\exam2\change\VB\VB\bin\Debug\VB.exe.config
+C:\016117\109\exam2\change\VB\VB\bin\Debug\VB.exe
+C:\016117\109\exam2\change\VB\VB\bin\Debug\VB.pdb
+C:\016117\109\exam2\change\VB\VB\bin\Debug\VB.xml
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.vbproj.SuggestedBindingRedirects.cache
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.Form1.resources
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.Resources.resources
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.exe
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.xml
+C:\016117\109\exam2\change\VB\VB\obj\Debug\VB.pdb
+C:\016117\110\exam2\VB\VB\bin\Debug\VB.exe.config
+C:\016117\110\exam2\VB\VB\bin\Debug\VB.exe
+C:\016117\110\exam2\VB\VB\bin\Debug\VB.pdb
+C:\016117\110\exam2\VB\VB\bin\Debug\VB.xml
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.vbproj.SuggestedBindingRedirects.cache
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.Form1.resources
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.Resources.resources
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.exe
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.xml
+C:\016117\110\exam2\VB\VB\obj\Debug\VB.pdb
+C:\016117\110\exam2\change\VB\VB\bin\Debug\VB.exe.config
+C:\016117\110\exam2\change\VB\VB\bin\Debug\VB.exe
+C:\016117\110\exam2\change\VB\VB\bin\Debug\VB.pdb
+C:\016117\110\exam2\change\VB\VB\bin\Debug\VB.xml
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.vbproj.SuggestedBindingRedirects.cache
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.Form1.resources
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.Resources.resources
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.exe
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.xml
+C:\016117\110\exam2\change\VB\VB\obj\Debug\VB.pdb
+C:\016117\112\113 test2\change\VB\VB\bin\Debug\VB.exe.config
+C:\016117\112\113 test2\change\VB\VB\bin\Debug\VB.exe
+C:\016117\112\113 test2\change\VB\VB\bin\Debug\VB.pdb
+C:\016117\112\113 test2\change\VB\VB\bin\Debug\VB.xml
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.vbproj.SuggestedBindingRedirects.cache
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.Form1.resources
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.Resources.resources
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.exe
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.xml
+C:\016117\112\113 test2\change\VB\VB\obj\Debug\VB.pdb
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\bin\Debug\VB.exe.config
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\bin\Debug\VB.exe
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\bin\Debug\VB.pdb
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\bin\Debug\VB.xml
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.Form1.resources
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.Resources.resources
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.exe
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.xml
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB\VB\obj\Debug\VB.pdb
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\bin\Debug\VB.exe.config
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\bin\Debug\VB.exe
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\bin\Debug\VB.pdb
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\bin\Debug\VB.xml
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.vbproj.AssemblyReference.cache
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.Form1.resources
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.Resources.resources
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.vbproj.GenerateResource.cache
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.vbproj.CoreCompileInputs.cache
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.exe
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.xml
+C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\VB2\VB\obj\Debug\VB.pdb
