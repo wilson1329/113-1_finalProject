@@ -1,296 +1,444 @@
 ﻿#include <gtk/gtk.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
+#include <math.h>
 
-/* 定義遊戲視窗大小和物件大小 */
-#define WINDOW_WIDTH 600
-#define WINDOW_HEIGHT 700
-#define PLAYER_WIDTH 50
-#define PLAYER_HEIGHT 40
-#define ENEMY_WIDTH 30
-#define ENEMY_HEIGHT 40
-#define MISSILE_WIDTH 5
-#define MISSILE_HEIGHT 15
-#define FPS 60
+// ===================== [ 常数 ] =====================
+#define GRID_SIZE     40
+#define CELL_SIZE     20
+#define MAX_ENEMIES   8  // 最大敌人数量（普通敌人）
+#define MAX_MISSILES  10 // 最大飞弹数量
+#define PLAYER_RADIUS 15
+#define ENEMY_RADIUS  15
+#define MISSILE_RADIUS 5
+#define LARGE_ENEMY_RADIUS 75  // 大型敌人尺寸（普通敌人5倍）
+#define INVINCIBLE_TIME 1  // 无敌时间（秒）
+#define BONUS_TIME 10  // 每存活10秒增加10分
 
-/* 定義遊戲物件結構，包括位置、大小、速度和狀態 */
+// ===================== [ 游戏模式 ] =====================
+typedef enum {
+    MODE_NONE = 0,
+    MODE_MENU,
+    MODE_PLAYING
+} GameMode;
+
+// ===================== [ 结构定义 ] =====================
 typedef struct {
     int x, y;
-    int width, height;
-    int speed_x, speed_y;
-    bool active;
-} GameObject;
+    int dx, dy;
+    gboolean is_active;  // 是否是活动的敌人
+    int hit_count;  // 跟踪大型敌人被击中次数
+    gboolean is_large;  // 是否为大型敌人
+} Enemy;
 
-/* 全域變數，用於保存遊戲狀態和物件 */
-GameObject player;
-GameObject enemies[8];
-GameObject missiles[20];
-int missile_count = 0;
-int score = 0;
-int lives = 3;
-bool running = true;
-bool invincible = false;
-int invincible_timer = 0;
-GtkWidget* drawing_area;
+typedef struct {
+    int x, y;
+    int dx, dy;
+    gboolean active;
+} Missile;
 
-/* 初始化或重置遊戲狀態 */
-void reset_game();
+typedef struct {
+    int x, y;
+    int dx, dy;
+    int lives;
+    int score;
+    gboolean invincible;
+    guint invincible_timeout;
+    guint survival_time;  // 存活时间，用于计算得分
+} Player;
 
-/* 生成新敵人 */
-void spawn_enemy(GameObject* enemy);
+// ===================== [ 全局变量 ] =====================
+static GtkWidget* window = NULL;
+static GtkWidget* canvas = NULL;
+static GameMode current_mode = MODE_MENU;
+static gboolean game_over = FALSE;
+static gboolean paused = FALSE;
 
-/* 更新遊戲狀態，例如物件移動和碰撞檢測 */
-void update_game_state();
+// 玩家相关
+static Player player;
 
-/* 繪製遊戲畫面，包括玩家、敵人和飛彈 */
-void draw_game(GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer data);
+// 飞弹
+static Missile missiles[MAX_MISSILES];
 
-/* 處理鍵盤按下事件，例如移動玩家或發射飛彈 */
-void on_key_press(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data);
-void on_key_release(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data);
+// 普通敌人
+static Enemy enemies[MAX_ENEMIES];
 
-/* 主遊戲迴圈，定期更新遊戲狀態並刷新畫面 */
-gboolean game_loop(gpointer user_data) {
-    if (!running) return G_SOURCE_REMOVE;  // 停止定時器
-    update_game_state();
-    gtk_widget_queue_draw(drawing_area);  // 刷新畫面
-    return G_SOURCE_CONTINUE;
-}
+// 大型敌人
+static Enemy large_enemy[1];  // 只有一个大型敌人
 
-/* 初始化或重置遊戲狀態，包括玩家位置、敵人生成和分數重置 */
-void reset_game() {
-    player.x = WINDOW_WIDTH / 2 - PLAYER_WIDTH / 2;
-    player.y = WINDOW_HEIGHT - PLAYER_HEIGHT - 10;
-    player.width = PLAYER_WIDTH;
-    player.height = PLAYER_HEIGHT;
-    player.speed_x = 0;
-    player.speed_y = 0;
-    player.active = true;
+// 敌人生成与飞弹发射定时器
+static guint enemy_timeout;
+static guint missile_timeout;
+static guint survival_time_timeout;  // 存活时间计时器
 
-    for (int i = 0; i < 8; i++) {
-        spawn_enemy(&enemies[i]);
+// ===================== [ 函数声明 ] =====================
+static void show_main_menu(void);
+static void on_back_to_menu_clicked(GtkButton* button, gpointer user_data);
+static void on_quit_clicked(GtkButton* button, gpointer user_data);
+
+static void start_game(void);
+static void generate_enemy(void);
+static gboolean update_game(gpointer data);
+static void move_player(int x, int y);
+static void fire_missile(void);
+static void check_collisions(void);
+static void update_scores(void);
+
+static void draw_game(GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer user_data);
+static void draw_player(cairo_t* cr);
+static void draw_missiles(cairo_t* cr);
+static void draw_enemies(cairo_t* cr);
+static void draw_large_enemy(cairo_t* cr);
+static void draw_score_and_lives(cairo_t* cr);
+
+static gboolean on_key_press(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data);
+
+// ===================== [ 游戏开始 ] =====================
+static void start_game(void) {
+    // 初始化玩家
+    player.x = GRID_SIZE / 2 * CELL_SIZE;  // 设置玩家初始位置在视窗下方
+    player.y = GRID_SIZE * CELL_SIZE - PLAYER_RADIUS - 10;
+    player.lives = 3;
+    player.score = 0;
+    player.invincible = FALSE;
+    player.survival_time = 0;
+
+    // 初始化飞弹
+    for (int i = 0; i < MAX_MISSILES; i++) {
+        missiles[i].active = FALSE;
     }
 
-    missile_count = 0;
-    score = 0;
-    lives = 3;
-    running = true;
-}
-
-/* 隨機生成敵人，設置其初始位置和速度 */
-void spawn_enemy(GameObject* enemy) {
-    enemy->x = rand() % (WINDOW_WIDTH - ENEMY_WIDTH);
-    enemy->y = -(rand() % 200);
-    enemy->width = ENEMY_WIDTH;
-    enemy->height = ENEMY_HEIGHT;
-    enemy->speed_x = (rand() % 7) - 3;
-    enemy->speed_y = 3 + rand() % 3;
-    enemy->active = true;
-}
-
-/* 更新遊戲邏輯，包括物件位置更新和碰撞處理 */
-void update_game_state() {
-    if (!running) return;
-
-    /* 更新玩家位置，限制玩家在視窗內移動 */
-    player.x += player.speed_x;
-    player.y += player.speed_y;
-    if (player.x < 0) player.x = 0;
-    if (player.x + player.width > WINDOW_WIDTH) player.x = WINDOW_WIDTH - player.width;
-    if (player.y < 0) player.y = 0;
-    if (player.y + player.height > WINDOW_HEIGHT) player.y = WINDOW_HEIGHT - player.height;
-
-    /* 更新敵人位置，如果超出視窗則重新生成 */
-    for (int i = 0; i < 8; i++) {
-        if (enemies[i].active) {
-            enemies[i].x += enemies[i].speed_x;
-            enemies[i].y += enemies[i].speed_y;
-            if (enemies[i].y > WINDOW_HEIGHT) {
-                spawn_enemy(&enemies[i]);
-                lives--;
-                if (lives <= 0) running = false;
-            }
-        }
+    // 初始化普通敌人
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        enemies[i].dx = 0;
+        enemies[i].dy = 0;
+        enemies[i].is_active = FALSE;
+        enemies[i].is_large = FALSE;
+        enemies[i].hit_count = 0;
     }
 
-    /* 更新飛彈位置，如果超出視窗則失效 */
-    for (int i = 0; i < missile_count; i++) {
+    // 初始化大型敌人
+    large_enemy[0].dx = 0;
+    large_enemy[0].dy = 0;
+    large_enemy[0].is_active = FALSE;
+    large_enemy[0].hit_count = 0;
+    large_enemy[0].is_large = TRUE;
+
+    // 创建并初始化 canvas 进行游戏显示
+    if (canvas == NULL) {
+        canvas = gtk_drawing_area_new();
+        gtk_widget_set_size_request(canvas, GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE);
+        gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(canvas), draw_game, NULL, NULL);
+        gtk_window_set_child(GTK_WINDOW(window), canvas);
+    }
+
+    // 启动定时器
+    g_timeout_add(16, update_game, NULL);  // 更新游戏
+    missile_timeout = g_timeout_add(500, update_game, NULL); // 更新飞弹状态
+    enemy_timeout = g_timeout_add(500, generate_enemy, NULL); // 每500毫秒生成敌人
+    survival_time_timeout = g_timeout_add(1000, update_scores, NULL); // 每秒更新存活时间
+}
+
+// 更新游戏状态
+static gboolean update_game(gpointer data) {
+    if (game_over || paused) return G_SOURCE_CONTINUE;
+
+    // 更新玩家和飞弹
+    check_collisions();
+
+    // 更新飞弹位置
+    for (int i = 0; i < MAX_MISSILES; i++) {
         if (missiles[i].active) {
-            missiles[i].y += missiles[i].speed_y;
-            if (missiles[i].y < 0) missiles[i].active = false;
-        }
-    }
-
-    /* 檢查飛彈和敵人之間的碰撞 */
-    for (int i = 0; i < 8; i++) {
-        if (!enemies[i].active) continue;
-
-        for (int j = 0; j < missile_count; j++) {
-            if (!missiles[j].active) continue;
-
-            if (missiles[j].x < enemies[i].x + enemies[i].width &&
-                missiles[j].x + MISSILE_WIDTH > enemies[i].x &&
-                missiles[j].y < enemies[i].y + enemies[i].height &&
-                missiles[j].y + MISSILE_HEIGHT > enemies[i].y) {
-                missiles[j].active = false;
-                enemies[i].active = false;
-                score += 100;
-                spawn_enemy(&enemies[i]);
-            }
-        }
-
-        /* 檢查玩家和敵人之間的碰撞 */
-        if (player.x < enemies[i].x + enemies[i].width &&
-            player.x + player.width > enemies[i].x &&
-            player.y < enemies[i].y + enemies[i].height &&
-            player.y + player.height > enemies[i].y) {
-            if (!invincible) {
-                enemies[i].active = false;
-                lives--;
-                invincible = true;
-                invincible_timer = 60;  // 60 frames的無敵時間
-                if (lives <= 0) running = false;
+            missiles[i].y -= 10; // 飞弹向上移动
+            if (missiles[i].y < 0) {
+                missiles[i].active = FALSE;  // 超出屏幕后停用
             }
         }
     }
 
-    /* 處理玩家的無敵狀態計時 */
-    if (invincible) {
-        invincible_timer--;
-        if (invincible_timer <= 0) invincible = false;
+    // 更新敌人位置
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (enemies[i].is_active) {
+            enemies[i].x += enemies[i].dx;
+            enemies[i].y += enemies[i].dy;
+
+            // 如果敌人碰到边缘，重新生成新的敌人
+            if (enemies[i].x < 0 || enemies[i].x > GRID_SIZE * CELL_SIZE || enemies[i].y < 0 || enemies[i].y > GRID_SIZE * CELL_SIZE) {
+                enemies[i].dx = 0;
+                enemies[i].dy = 0;
+                enemies[i].is_active = FALSE;  // 删除敌人
+                generate_enemy();  // 生成新的敌人
+            }
+        }
+    }
+
+    // 更新大型敌人
+    if (large_enemy[0].is_active) {
+        large_enemy[0].x += large_enemy[0].dx;
+        large_enemy[0].y += large_enemy[0].dy;
+
+        // 控制大型敌人不超出边界
+        if (large_enemy[0].x < 0 || large_enemy[0].x > GRID_SIZE * CELL_SIZE || large_enemy[0].y < 0 || large_enemy[0].y > GRID_SIZE * CELL_SIZE) {
+            large_enemy[0].dx = 0;
+            large_enemy[0].dy = 0;
+        }
+    }
+
+    // 确保canvas有效才进行绘制
+    if (canvas) {
+        gtk_widget_queue_draw(canvas);  // 刷新画面
+    }
+
+    return TRUE;
+}
+
+// ===================== [ 玩家控制与射击 ] =====================
+static void move_player(int x, int y) {
+    if (!game_over && !paused) {
+        player.x = x;
+        player.y = y;
     }
 }
 
-/* 使用 Cairo 繪製遊戲物件，包括玩家、敵人和飛彈 */
-void draw_game(GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer data) {
-    /* 填充背景為白色 */
-    cairo_set_source_rgb(cr, 1, 1, 1);
+static void fire_missile(void) {
+    for (int i = 0; i < MAX_MISSILES; i++) {
+        if (!missiles[i].active) {
+            missiles[i].active = TRUE;
+            missiles[i].x = player.x;
+            missiles[i].y = player.y - PLAYER_RADIUS;
+            break;
+        }
+    }
+}
+
+// ===================== [ 碰撞检测 ] =====================
+static void check_collisions(void) {
+    // 检查玩家与敌人碰撞
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (enemies[i].is_active) {
+            if (abs(player.x - enemies[i].x) < PLAYER_RADIUS + ENEMY_RADIUS &&
+                abs(player.y - enemies[i].y) < PLAYER_RADIUS + ENEMY_RADIUS) {
+                if (!player.invincible) {
+                    player.lives -= 1;
+                    player.invincible = TRUE;
+                    // 触发闪烁效果
+                    if (player.invincible_timeout) {
+                        g_source_remove(player.invincible_timeout);
+                    }
+                    player.invincible_timeout = g_timeout_add_seconds(INVINCIBLE_TIME, (GSourceFunc)g_object_ref, NULL);  // 无敌状态
+                }
+            }
+        }
+    }
+
+    // 检查飞弹与敌人的碰撞
+    for (int i = 0; i < MAX_MISSILES; i++) {
+        if (missiles[i].active) {
+            for (int j = 0; j < MAX_ENEMIES; j++) {
+                if (enemies[j].is_active) {
+                    if (abs(missiles[i].x - enemies[j].x) < MISSILE_RADIUS + ENEMY_RADIUS &&
+                        abs(missiles[i].y - enemies[j].y) < MISSILE_RADIUS + ENEMY_RADIUS) {
+                        missiles[i].active = FALSE;
+                        enemies[j].is_active = FALSE;  // 删除敌人
+                        player.score += 100;
+                        generate_enemy();  // 生成新的敌人
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ===================== [ 更新分数与奖励 ] =====================
+static void update_scores(void) {
+    if (player.lives > 0) {
+        player.survival_time += 1;
+        if (player.survival_time % 1 == 0) {
+            player.score += 10;  // 每秒增加10分
+        }
+    }
+}
+
+// ===================== [ 绘制游戏内容 ] =====================
+static void draw_game(GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer user_data) {
+    // 背景
+    cairo_set_source_rgb(cr, 0.1, 0.1, 0.1);
     cairo_paint(cr);
 
-    /* 繪製玩家 */
-    if (invincible && (invincible_timer % 10 < 5)) {
-        cairo_set_source_rgb(cr, 1, 1, 0);  // 如果是無敵狀態，讓玩家閃爍
+    // 绘制玩家
+    draw_player(cr);
+
+    // 绘制飞弹
+    draw_missiles(cr);
+
+    // 绘制普通敌人
+    draw_enemies(cr);
+
+    // 绘制大型敌人
+    draw_large_enemy(cr);
+
+    // 绘制分数与血量
+    draw_score_and_lives(cr);
+}
+
+// 绘制玩家
+static void draw_player(cairo_t* cr) {
+    if (player.invincible) {
+        // 如果是无敌状态，使用闪烁效果（改变颜色）
+        double r = (sin(g_get_monotonic_time() / 1000000.0) + 1) / 2;  // 闪烁效果
+        cairo_set_source_rgb(cr, r, 0.0, 1.0);  // 闪烁的颜色
     }
     else {
-        cairo_set_source_rgb(cr, 0, 1, 0);  // 玩家是綠色的
+        cairo_set_source_rgb(cr, 0.0, 0.0, 1.0);  // 正常颜色
     }
-    cairo_rectangle(cr, player.x, player.y, player.width, player.height);
+    cairo_arc(cr, player.x, player.y, PLAYER_RADIUS, 0, 2 * G_PI);
     cairo_fill(cr);
+}
 
-    /* 繪製敵人 */
-    for (int i = 0; i < 8; i++) {
-        if (enemies[i].active) {
-            cairo_set_source_rgb(cr, 1, 0, 0);  // 设定敌人颜色为红色
-            cairo_rectangle(cr, enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height);
-            cairo_fill(cr);
-        }
-    }
-
-    /* 繪製飛彈 */
-    for (int i = 0; i < missile_count; i++) {
+// 绘制飞弹
+static void draw_missiles(cairo_t* cr) {
+    for (int i = 0; i < MAX_MISSILES; i++) {
         if (missiles[i].active) {
-            cairo_set_source_rgb(cr, 0, 0, 1);  // 飞弹颜色为蓝色
-            cairo_rectangle(cr, missiles[i].x, missiles[i].y, MISSILE_WIDTH, MISSILE_HEIGHT);
+            cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);  // 红色
+            cairo_arc(cr, missiles[i].x, missiles[i].y, MISSILE_RADIUS, 0, 2 * G_PI);
             cairo_fill(cr);
         }
     }
-
-    /* 繪製分數和生命值 */
-    cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_select_font_face(cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_font_size(cr, 20);
-
-    char buffer[32];
-    sprintf(buffer, "Score: %d", score);
-    cairo_move_to(cr, 10, 20);
-    cairo_show_text(cr, buffer);
-
-    sprintf(buffer, "Lives: %d", lives);
-    cairo_move_to(cr, 10, 50);
-    cairo_show_text(cr, buffer);
 }
 
-/* 使用 GtkEventControllerKey 處理鍵盤按下輸入 */
-void on_key_press(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
-    switch (keyval) {
-    case GDK_KEY_Left:
-        player.speed_x = -5;
-        break;
-    case GDK_KEY_Right:
-        player.speed_x = 5;
-        break;
-    case GDK_KEY_Up:
-        player.speed_y = -5;
-        break;
-    case GDK_KEY_Down:
-        player.speed_y = 5;
-        break;
-    case GDK_KEY_space:
-        if (missile_count < 20) {
-            missiles[missile_count++] = (GameObject){
-                .x = player.x + player.width / 2 - MISSILE_WIDTH / 2,
-                .y = player.y,
-                .width = MISSILE_WIDTH,
-                .height = MISSILE_HEIGHT,
-                .speed_x = 0,
-                .speed_y = -10,
-                .active = true
-            };
+// 绘制普通敌人
+static void draw_enemies(cairo_t* cr) {
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (enemies[i].is_active) {
+            cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);  // 红色敌人
+            cairo_arc(cr, enemies[i].x, enemies[i].y, ENEMY_RADIUS, 0, 2 * G_PI);
+            cairo_fill(cr);
         }
-        break;
     }
 }
 
-/* 使用 GtkEventControllerKey 處理鍵盤釋放輸入 */
-void on_key_release(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
-    switch (keyval) {
-    case GDK_KEY_Left:
-    case GDK_KEY_Right:
-        player.speed_x = 0;
-        break;
-    case GDK_KEY_Up:
-    case GDK_KEY_Down:
-        player.speed_y = 0;
-        break;
+// 绘制大型敌人
+static void draw_large_enemy(cairo_t* cr) {
+    if (large_enemy[0].is_active) {
+        cairo_set_source_rgb(cr, 0.5, 0.0, 0.0);  // 红色大型敌人
+        cairo_arc(cr, large_enemy[0].x, large_enemy[0].y, LARGE_ENEMY_RADIUS, 0, 2 * G_PI);
+        cairo_fill(cr);
     }
 }
 
-/* GTK activate 回調函數，負責初始化視窗和遊戲邏輯 */
-void activate(GtkApplication* app, gpointer user_data) {
-    GtkWidget* window = gtk_application_window_new(app);
+// 绘制分数和血量
+static void draw_score_and_lives(cairo_t* cr) {
+    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+    cairo_move_to(cr, 10, 20);
+    cairo_show_text(cr, "Score: ");
+    cairo_show_text(cr, g_strdup_printf("%d", player.score));
+
+    cairo_move_to(cr, 10, 40);
+    cairo_show_text(cr, "Lives: ");
+    cairo_show_text(cr, g_strdup_printf("%d", player.lives));
+}
+
+// ===================== [ 生成敌人 ] =====================
+static void generate_enemy(void) {
+    // 随机生成敌人，最多生成8个敌人
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (!enemies[i].is_active) {
+            int num_enemies = rand() % 3 + 3; // 随机生成3~5个敌人
+            for (int j = 0; j < num_enemies; j++) {
+                // 随机生成敌人位置，确保方向指向玩家
+                enemies[i].x = player.x + (rand() % 200 - 100);  // 随机生成左右位置
+                enemies[i].y = 0;  // 固定在视窗顶部
+                enemies[i].dx = (rand() % 3) - 1;  // 随机移动方向
+                enemies[i].dy = 1;  // 向下移动
+
+                enemies[i].is_active = TRUE;  // 激活敌人
+            }
+            break;
+        }
+    }
+}
+
+// ===================== [ 按键事件处理 ] =====================
+static gboolean on_key_press(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data) {
+    if (game_over || paused) return FALSE;
+
+    if (keyval == GDK_KEY_Up) {
+        if (player.y > 0) player.y -= 10;
+    }
+    else if (keyval == GDK_KEY_Down) {
+        if (player.y < GRID_SIZE * CELL_SIZE) player.y += 10;
+    }
+    else if (keyval == GDK_KEY_Left) {
+        if (player.x > 0) player.x -= 10;
+    }
+    else if (keyval == GDK_KEY_Right) {
+        if (player.x < GRID_SIZE * CELL_SIZE) player.x += 10;
+    }
+    else if (keyval == GDK_KEY_space) {
+        fire_missile();
+    }
+
+    return FALSE;
+}
+
+// ===================== [ 返回主菜单 / 退出 ] =====================
+static void on_back_to_menu_clicked(GtkButton* button, gpointer user_data) {
+    game_over = FALSE;
+    paused = FALSE;
+    current_mode = MODE_MENU;
+
+    // 返回主菜单
+    show_main_menu();
+}
+
+static void on_quit_clicked(GtkButton* button, gpointer user_data) {
+    GtkApplication* app = GTK_APPLICATION(gtk_window_get_application(GTK_WINDOW(window)));
+    if (app) g_application_quit(G_APPLICATION(app));
+}
+
+// ===================== [ 主菜单 ] =====================
+static void show_main_menu(void) {
+    if (current_mode == MODE_MENU) {
+        GtkWidget* vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+        gtk_widget_set_halign(vbox, GTK_ALIGN_CENTER);
+        gtk_widget_set_valign(vbox, GTK_ALIGN_CENTER);
+
+        GtkWidget* label = gtk_label_new("Select Game Mode");
+        gtk_box_append(GTK_BOX(vbox), label);
+
+        GtkWidget* play_btn = gtk_button_new_with_label("Play");
+        gtk_box_append(GTK_BOX(vbox), play_btn);
+        g_signal_connect(play_btn, "clicked", G_CALLBACK(start_game), NULL);
+
+        GtkWidget* quit_btn = gtk_button_new_with_label("Exit");
+        gtk_box_append(GTK_BOX(vbox), quit_btn);
+        g_signal_connect(quit_btn, "clicked", G_CALLBACK(on_quit_clicked), NULL);
+
+        gtk_window_set_child(GTK_WINDOW(window), vbox);
+    }
+}
+
+// ===================== [ 程序入口 ] =====================
+static void activate(GtkApplication* app, gpointer user_data) {
+    window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "Stellar Blitz");
-    gtk_window_set_default_size(GTK_WINDOW(window), WINDOW_WIDTH, WINDOW_HEIGHT);
+    gtk_window_set_default_size(GTK_WINDOW(window), GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE);
 
-    drawing_area = gtk_drawing_area_new();
-    gtk_widget_set_size_request(drawing_area, WINDOW_WIDTH, WINDOW_HEIGHT); // 設置繪圖區域大小
-    gtk_window_set_child(GTK_WINDOW(window), drawing_area);
+    GtkEventController* controller = gtk_event_controller_key_new();
+    g_signal_connect(controller, "key-pressed", G_CALLBACK(on_key_press), NULL);
+    gtk_widget_add_controller(window, controller);
 
-    /* 設置繪圖回調函數 */
-    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_game, NULL, NULL);
-
-    /* 初始化鍵盤事件控制器 */
-    GtkEventController* key_controller = gtk_event_controller_key_new();
-    g_signal_connect(key_controller, "key-pressed", G_CALLBACK(on_key_press), NULL);
-    g_signal_connect(key_controller, "key-released", G_CALLBACK(on_key_release), NULL);
-    gtk_widget_add_controller(drawing_area, key_controller);
-
-    reset_game();  // 初始化遊戲狀態
-    gtk_widget_show(window);
-
-    /* 啟動遊戲邏輯定時器 */
-    g_timeout_add(1000 / FPS, game_loop, NULL);
+    show_main_menu();
+    gtk_window_present(GTK_WINDOW(window));
 }
 
-/* 主函數，初始化 GTK 和遊戲邏輯 */
 int main(int argc, char** argv) {
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
-    GtkApplication* app = gtk_application_new("com.example.game", G_APPLICATION_FLAGS_NONE);
+    GtkApplication* app = gtk_application_new("com.example.StellarBlitz", G_APPLICATION_FLAGS_NONE);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
 
-    g_application_run(G_APPLICATION(app), argc, argv);
-
+    int status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);
-    return 0;
+    return status;
 }
