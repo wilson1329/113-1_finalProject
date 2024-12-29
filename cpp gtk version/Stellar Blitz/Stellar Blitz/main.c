@@ -12,14 +12,18 @@
 #define ENEMY_RADIUS  15
 #define MISSILE_RADIUS 5
 #define LARGE_ENEMY_RADIUS 75  // 大型敌人尺寸（普通敌人5倍）
-#define INVINCIBLE_TIME 1  // 无敌时间（秒）
 #define BONUS_TIME 10  // 每存活10秒增加10分
+#define MAX_ENEMIES_BEFORE_BOSS 20 // 击败指定数量的敌人后生成魔王
+#define INVINCIBLE_TIME 1  // 无敌时间（秒）
 
 // ===================== [ 游戏模式 ] =====================
 typedef enum {
     MODE_NONE = 0,
     MODE_MENU,
-    MODE_PLAYING
+    MODE_PLAYING,
+    MODE_BOSS_FIGHT, // 魔王关卡
+    MODE_GAME_OVER,  // 游戏结束
+    MODE_WIN         // 胜利
 } GameMode;
 
 // ===================== [ 结构定义 ] =====================
@@ -42,9 +46,10 @@ typedef struct {
     int dx, dy;
     int lives;
     int score;
-    gboolean invincible;
-    guint invincible_timeout;
+    int defeated_enemies; // 击败的敌人数量
     guint survival_time;  // 存活时间，用于计算得分
+    gboolean invincible; // 是否处于无敌状态
+    guint invincible_timeout; // 无敌定时器
 } Player;
 
 // ===================== [ 全局变量 ] =====================
@@ -53,6 +58,7 @@ static GtkWidget* canvas = NULL;
 static GameMode current_mode = MODE_MENU;
 static gboolean game_over = FALSE;
 static gboolean paused = FALSE;
+static gboolean can_generate_enemies = TRUE;  // 控制是否可以生成敌人
 
 // 玩家相关
 static Player player;
@@ -70,6 +76,7 @@ static Enemy large_enemy[1];  // 只有一个大型敌人
 static guint enemy_timeout;
 static guint missile_timeout;
 static guint survival_time_timeout;  // 存活时间计时器
+static guint boss_timeout;  // 魔王的定时器
 
 // ===================== [ 函数声明 ] =====================
 static void show_main_menu(void);
@@ -83,13 +90,18 @@ static void move_player(int x, int y);
 static void fire_missile(void);
 static void check_collisions(void);
 static void update_scores(void);
+static void generate_boss(void);
+static void clear_enemies_and_wait_for_boss(void);  // 清除敌人并等待魔王出现
+static void end_game(const char* message);
 
 static void draw_game(GtkDrawingArea* area, cairo_t* cr, int width, int height, gpointer user_data);
 static void draw_player(cairo_t* cr);
 static void draw_missiles(cairo_t* cr);
 static void draw_enemies(cairo_t* cr);
 static void draw_large_enemy(cairo_t* cr);
-static void draw_score_and_lives(cairo_t* cr);
+static void draw_score_and_lives(cairo_t* cr);  // 绘制分数和血量
+static void draw_enemy_count(cairo_t* cr); // 显示击败敌人数量
+static void draw_boss_health(cairo_t* cr); // 绘制魔王的剩余血量
 
 static gboolean on_key_press(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer user_data);
 
@@ -98,9 +110,10 @@ static void start_game(void) {
     // 初始化玩家
     player.x = GRID_SIZE / 2 * CELL_SIZE;  // 设置玩家初始位置在视窗下方
     player.y = GRID_SIZE * CELL_SIZE - PLAYER_RADIUS - 10;
-    player.lives = 3;
+    player.lives = 5;  // 修改血量为5
     player.score = 0;
-    player.invincible = FALSE;
+    player.defeated_enemies = 0;
+    player.invincible = FALSE;  // 初始状态为非无敌
     player.survival_time = 0;
 
     // 初始化飞弹
@@ -179,8 +192,15 @@ static gboolean update_game(gpointer data) {
 
         // 控制大型敌人不超出边界
         if (large_enemy[0].x < 0 || large_enemy[0].x > GRID_SIZE * CELL_SIZE || large_enemy[0].y < 0 || large_enemy[0].y > GRID_SIZE * CELL_SIZE) {
-            large_enemy[0].dx = 0;
-            large_enemy[0].dy = 0;
+            large_enemy[0].dx = -large_enemy[0].dx;  // 反弹
+            large_enemy[0].dy = -large_enemy[0].dy;  // 反弹
+        }
+    }
+
+    // 检查是否进入魔王关卡
+    if (player.defeated_enemies >= MAX_ENEMIES_BEFORE_BOSS) {
+        if (!large_enemy[0].is_active && can_generate_enemies) {
+            clear_enemies_and_wait_for_boss();  // 清除敌人并等待魔王出现
         }
     }
 
@@ -218,14 +238,15 @@ static void check_collisions(void) {
         if (enemies[i].is_active) {
             if (abs(player.x - enemies[i].x) < PLAYER_RADIUS + ENEMY_RADIUS &&
                 abs(player.y - enemies[i].y) < PLAYER_RADIUS + ENEMY_RADIUS) {
-                if (!player.invincible) {
-                    player.lives -= 1;
-                    player.invincible = TRUE;
-                    // 触发闪烁效果
+                if (!player.invincible) {  // 只有在非无敌状态下才会受到伤害
+                    player.lives -= 1;  // 撞到敌人扣血
+                    player.invincible = TRUE;  // 开启无敌状态
+
+                    // 设置无敌定时器，1秒后取消无敌状态
                     if (player.invincible_timeout) {
                         g_source_remove(player.invincible_timeout);
                     }
-                    player.invincible_timeout = g_timeout_add_seconds(INVINCIBLE_TIME, (GSourceFunc)g_object_ref, NULL);  // 无敌状态
+                    player.invincible_timeout = g_timeout_add_seconds(INVINCIBLE_TIME, (GSourceFunc)g_object_ref, NULL);
                 }
             }
         }
@@ -241,12 +262,65 @@ static void check_collisions(void) {
                         missiles[i].active = FALSE;
                         enemies[j].is_active = FALSE;  // 删除敌人
                         player.score += 100;
+                        player.defeated_enemies += 1;  // 更新击败的敌人数量
                         generate_enemy();  // 生成新的敌人
                     }
                 }
             }
         }
     }
+
+    // 检查飞弹与魔王碰撞
+    if (large_enemy[0].is_active) {
+        for (int i = 0; i < MAX_MISSILES; i++) {
+            if (missiles[i].active) {
+                if (abs(missiles[i].x - large_enemy[0].x) < MISSILE_RADIUS + LARGE_ENEMY_RADIUS &&
+                    abs(missiles[i].y - large_enemy[0].y) < MISSILE_RADIUS + LARGE_ENEMY_RADIUS) {
+                    missiles[i].active = FALSE;
+                    large_enemy[0].hit_count += 1;  // 增加魔王的被击中次数
+
+                    // 检查魔王血量
+                    if (large_enemy[0].hit_count >= 50) {
+                        // 魔王被击败，进入胜利状态
+                        end_game("You Win!");
+                    }
+                }
+            }
+        }
+    }
+
+    // 检查玩家血量是否为零
+    if (player.lives <= 0) {
+        end_game("Game Over");
+    }
+}
+
+// ===================== [ 游戏结束 ] =====================
+static void end_game(const char* message) {
+    game_over = TRUE;
+    current_mode = MODE_GAME_OVER;
+
+    // 显示游戏结束的消息
+    printf("%s\n", message);
+
+    // 返回主菜单
+    show_main_menu();
+}
+
+// ===================== [ 清除敌人并等待魔王出现 ] =====================
+static void clear_enemies_and_wait_for_boss(void) {
+    // 清除所有当前场上的敌人
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        enemies[i].is_active = FALSE;
+    }
+
+    // 等待3秒后生成魔王
+    if (player.defeated_enemies >= MAX_ENEMIES_BEFORE_BOSS) {
+        g_timeout_add_seconds(3, (GSourceFunc)generate_boss, NULL); // 3秒后生成魔王
+    }
+
+    // 停止生成敌人
+    can_generate_enemies = FALSE;
 }
 
 // ===================== [ 更新分数与奖励 ] =====================
@@ -257,6 +331,33 @@ static void update_scores(void) {
             player.score += 10;  // 每秒增加10分
         }
     }
+}
+
+// ===================== [ 生成魔王 ] =====================
+static void generate_boss(void) {
+    // 魔王从视窗上方正中间滑入
+    large_enemy[0].x = player.x;  // 设置魔王的初始位置为玩家的X坐标
+    large_enemy[0].y = 0;  // 从顶部进入
+    large_enemy[0].dx = 0;
+    large_enemy[0].dy = 1;  // 魔王下滑
+    large_enemy[0].is_active = TRUE;  // 激活魔王
+    large_enemy[0].hit_count = 0;  // 初始化击中次数
+}
+
+//====================== [繪製數值 ] =======================
+static void draw_score_and_lives(cairo_t* cr) {
+    // 设置文字颜色为白色
+    cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+
+    // 绘制分数
+    cairo_move_to(cr, 10, 20);  // 定位文本的起始位置
+    cairo_show_text(cr, "Score: ");
+    cairo_show_text(cr, g_strdup_printf("%d", player.score));  // 显示玩家得分
+
+    // 绘制血量
+    cairo_move_to(cr, 10, 40);  // 定位文本的位置
+    cairo_show_text(cr, "Lives: ");
+    cairo_show_text(cr, g_strdup_printf("%d", player.lives));  // 显示玩家血量
 }
 
 // ===================== [ 绘制游戏内容 ] =====================
@@ -279,18 +380,13 @@ static void draw_game(GtkDrawingArea* area, cairo_t* cr, int width, int height, 
 
     // 绘制分数与血量
     draw_score_and_lives(cr);
+    draw_enemy_count(cr); // 显示击败的敌人数量
+    draw_boss_health(cr);  // 绘制魔王剩余血量
 }
 
 // 绘制玩家
 static void draw_player(cairo_t* cr) {
-    if (player.invincible) {
-        // 如果是无敌状态，使用闪烁效果（改变颜色）
-        double r = (sin(g_get_monotonic_time() / 1000000.0) + 1) / 2;  // 闪烁效果
-        cairo_set_source_rgb(cr, r, 0.0, 1.0);  // 闪烁的颜色
-    }
-    else {
-        cairo_set_source_rgb(cr, 0.0, 0.0, 1.0);  // 正常颜色
-    }
+    cairo_set_source_rgb(cr, 0.0, 0.0, 1.0);  // 正常颜色
     cairo_arc(cr, player.x, player.y, PLAYER_RADIUS, 0, 2 * G_PI);
     cairo_fill(cr);
 }
@@ -299,7 +395,7 @@ static void draw_player(cairo_t* cr) {
 static void draw_missiles(cairo_t* cr) {
     for (int i = 0; i < MAX_MISSILES; i++) {
         if (missiles[i].active) {
-            cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);  // 红色
+            cairo_set_source_rgb(cr, 0.0, 1.0, 0.0);  // 绿色
             cairo_arc(cr, missiles[i].x, missiles[i].y, MISSILE_RADIUS, 0, 2 * G_PI);
             cairo_fill(cr);
         }
@@ -326,16 +422,22 @@ static void draw_large_enemy(cairo_t* cr) {
     }
 }
 
-// 绘制分数和血量
-static void draw_score_and_lives(cairo_t* cr) {
+// 绘制击败的敌人数量
+static void draw_enemy_count(cairo_t* cr) {
     cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-    cairo_move_to(cr, 10, 20);
-    cairo_show_text(cr, "Score: ");
-    cairo_show_text(cr, g_strdup_printf("%d", player.score));
+    cairo_move_to(cr, 10, 60);
+    cairo_show_text(cr, "Enemies Defeated: ");
+    cairo_show_text(cr, g_strdup_printf("%d", player.defeated_enemies));
+}
 
-    cairo_move_to(cr, 10, 40);
-    cairo_show_text(cr, "Lives: ");
-    cairo_show_text(cr, g_strdup_printf("%d", player.lives));
+// 绘制魔王剩余血量
+static void draw_boss_health(cairo_t* cr) {
+    if (large_enemy[0].is_active) {
+        cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+        cairo_move_to(cr, 10, 80);
+        cairo_show_text(cr, "Boss Health: ");
+        cairo_show_text(cr, g_strdup_printf("%d", 50 - large_enemy[0].hit_count));  // 显示剩余血量
+    }
 }
 
 // ===================== [ 生成敌人 ] =====================
