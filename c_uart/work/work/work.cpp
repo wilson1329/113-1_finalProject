@@ -76,8 +76,9 @@ void UART_Receive(HANDLE hComm, char* buffer, DWORD bufferSize) {
         if (buffer[0] == 'a') {  //模式A
             printf("A");
 
-        }else if (buffer[0] == 'b') {  //模式B
-            printf("B");
+        }
+        else if (buffer[0] == 'b') {  //模式B
+           printf("B");
 
         }
         else if (buffer[0] == 'c') {  //模式C

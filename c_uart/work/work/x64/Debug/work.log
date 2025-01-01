@@ -1,4 +1,5 @@
 ﻿  work.cpp
 C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\work\work.cpp(60,8): warning C4267: '引數': 將 'size_t' 轉換為 'DWORD'，資料可能遺失
-C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\work\work.cpp(101,10): warning C4101: 'sentData': 未參考的區域變數
+C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\work\work.cpp(102,10): warning C4101: 'sentData': 未參考的區域變數
+  LINK : 最後的累加連結找不到或未建置 C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\x64\Debug\work.exe，正在執行完整連結
   work.vcxproj -> C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\x64\Debug\work.exe
