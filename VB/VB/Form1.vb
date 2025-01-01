@@ -1,6 +1,4 @@
-﻿
-
-Partial Class Form1
+﻿Partial Class Form1
     Private data123 As String = ""                                                                                          '初始設空白
     Dim receive As String = ""
 
@@ -47,9 +45,9 @@ Partial Class Form1
         button(3, 2).Text = "2"
         button(3, 3).Text = "3"
 
-        button(4, 1).Text = ""
-        button(4, 2).Text = "0"
-        button(4, 3).Text = ""
+        button(4, 1).Text = "a"
+        button(4, 2).Text = "b"
+        button(4, 3).Text = "c"
 
     End Sub
     Private Sub button_click(ByVal sender As Object, ByVal e As MouseEventArgs) '鍵盤矩陣
@@ -68,9 +66,9 @@ Partial Class Form1
             Case "31" : data = 1
             Case "32" : data = 2
             Case "33" : data = 3
-            Case "41" : data = ""
-            Case "42" : data = 0
-            Case "43" : data = ""
+            Case "41" : data = "a"
+            Case "42" : data = "b"
+            Case "43" : data = "c"
         End Select
 
         If data1.Length < 4 Then
@@ -86,10 +84,12 @@ Partial Class Form1
     Private Sub clearout_Click(sender As Object, e As EventArgs) Handles clearout.Click
         data1 = ""
         data = ""
+        Label1.Text = "輸出"
         outputbox1.Clear()
     End Sub
     Private Sub clearin_Click(sender As Object, e As EventArgs) Handles clearin.Click
         rxreg = ""
+        Label3.Text = "輸入"
         outputbox2.Clear()
     End Sub
     Private Sub back_Click(sender As Object, e As EventArgs) Handles back.Click
@@ -100,7 +100,7 @@ Partial Class Form1
     End Sub
 
     Private Sub out_Click(sender As Object, e As EventArgs) Handles out.Click
-        SerialPort1.Write("x")
+        'SerialPort1.Write("x")
         SerialPort1.Write(outputbox1.Text)
         outputbox1.Text = ""
         data1 = ""

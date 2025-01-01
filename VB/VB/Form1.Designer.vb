@@ -43,25 +43,28 @@ Partial Class Form1
         'SerialPort1
         '
         Me.SerialPort1.DtrEnable = True
+        Me.SerialPort1.PortName = "COM2"
         Me.SerialPort1.RtsEnable = True
         '
         'ListBox2
         '
         Me.ListBox2.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ListBox2.FormattingEnabled = True
-        Me.ListBox2.ItemHeight = 12
-        Me.ListBox2.Location = New System.Drawing.Point(62, 175)
+        Me.ListBox2.ItemHeight = 16
+        Me.ListBox2.Location = New System.Drawing.Point(93, 233)
+        Me.ListBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.ListBox2.Name = "ListBox2"
-        Me.ListBox2.Size = New System.Drawing.Size(262, 136)
+        Me.ListBox2.Size = New System.Drawing.Size(391, 180)
         Me.ListBox2.TabIndex = 64
         '
         'outputbox1
         '
         Me.outputbox1.Font = New System.Drawing.Font("新細明體", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(136, Byte))
-        Me.outputbox1.Location = New System.Drawing.Point(88, 243)
+        Me.outputbox1.Location = New System.Drawing.Point(132, 324)
+        Me.outputbox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.outputbox1.Multiline = True
         Me.outputbox1.Name = "outputbox1"
-        Me.outputbox1.Size = New System.Drawing.Size(199, 44)
+        Me.outputbox1.Size = New System.Drawing.Size(296, 57)
         Me.outputbox1.TabIndex = 66
         '
         'Label1
@@ -69,18 +72,20 @@ Partial Class Form1
         Me.Label1.AutoSize = True
         Me.Label1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.Label1.Font = New System.Drawing.Font("新細明體", 21.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(136, Byte))
-        Me.Label1.Location = New System.Drawing.Point(94, 193)
+        Me.Label1.Location = New System.Drawing.Point(141, 257)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(71, 29)
+        Me.Label1.Size = New System.Drawing.Size(93, 38)
         Me.Label1.TabIndex = 65
         Me.Label1.Text = "輸出"
         '
         'clearout
         '
         Me.clearout.BackColor = System.Drawing.Color.Silver
-        Me.clearout.Location = New System.Drawing.Point(658, 156)
+        Me.clearout.Location = New System.Drawing.Point(987, 208)
+        Me.clearout.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.clearout.Name = "clearout"
-        Me.clearout.Size = New System.Drawing.Size(100, 50)
+        Me.clearout.Size = New System.Drawing.Size(150, 67)
         Me.clearout.TabIndex = 67
         Me.clearout.Text = "清除輸出"
         Me.clearout.UseVisualStyleBackColor = False
@@ -88,9 +93,10 @@ Partial Class Form1
         'back
         '
         Me.back.BackColor = System.Drawing.Color.Silver
-        Me.back.Location = New System.Drawing.Point(658, 212)
+        Me.back.Location = New System.Drawing.Point(987, 283)
+        Me.back.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.back.Name = "back"
-        Me.back.Size = New System.Drawing.Size(100, 50)
+        Me.back.Size = New System.Drawing.Size(150, 67)
         Me.back.TabIndex = 68
         Me.back.Text = "返回"
         Me.back.UseVisualStyleBackColor = False
@@ -98,9 +104,10 @@ Partial Class Form1
         'out
         '
         Me.out.BackColor = System.Drawing.Color.Silver
-        Me.out.Location = New System.Drawing.Point(658, 268)
+        Me.out.Location = New System.Drawing.Point(987, 357)
+        Me.out.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.out.Name = "out"
-        Me.out.Size = New System.Drawing.Size(100, 50)
+        Me.out.Size = New System.Drawing.Size(150, 67)
         Me.out.TabIndex = 69
         Me.out.Text = "送出"
         Me.out.UseVisualStyleBackColor = False
@@ -108,9 +115,10 @@ Partial Class Form1
         'clearin
         '
         Me.clearin.BackColor = System.Drawing.Color.Silver
-        Me.clearin.Location = New System.Drawing.Point(658, 324)
+        Me.clearin.Location = New System.Drawing.Point(987, 432)
+        Me.clearin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.clearin.Name = "clearin"
-        Me.clearin.Size = New System.Drawing.Size(100, 50)
+        Me.clearin.Size = New System.Drawing.Size(150, 67)
         Me.clearin.TabIndex = 70
         Me.clearin.Text = "清除輸入"
         Me.clearin.UseVisualStyleBackColor = False
@@ -118,9 +126,11 @@ Partial Class Form1
         'GroupBox1
         '
         Me.GroupBox1.BackColor = System.Drawing.Color.White
-        Me.GroupBox1.Location = New System.Drawing.Point(451, 109)
+        Me.GroupBox1.Location = New System.Drawing.Point(676, 145)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(337, 301)
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox1.Size = New System.Drawing.Size(506, 401)
         Me.GroupBox1.TabIndex = 71
         Me.GroupBox1.TabStop = False
         '
@@ -132,9 +142,10 @@ Partial Class Form1
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("新細明體", 26.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(136, Byte))
-        Me.Label2.Location = New System.Drawing.Point(136, 82)
+        Me.Label2.Location = New System.Drawing.Point(204, 109)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(106, 35)
+        Me.Label2.Size = New System.Drawing.Size(140, 46)
         Me.Label2.TabIndex = 72
         Me.Label2.Text = "Label2"
         '
@@ -146,10 +157,11 @@ Partial Class Form1
         'outputbox2
         '
         Me.outputbox2.Font = New System.Drawing.Font("新細明體", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(136, Byte))
-        Me.outputbox2.Location = New System.Drawing.Point(88, 374)
+        Me.outputbox2.Location = New System.Drawing.Point(132, 499)
+        Me.outputbox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.outputbox2.Multiline = True
         Me.outputbox2.Name = "outputbox2"
-        Me.outputbox2.Size = New System.Drawing.Size(199, 44)
+        Me.outputbox2.Size = New System.Drawing.Size(296, 57)
         Me.outputbox2.TabIndex = 75
         '
         'Label3
@@ -157,9 +169,10 @@ Partial Class Form1
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.Label3.Font = New System.Drawing.Font("新細明體", 21.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(136, Byte))
-        Me.Label3.Location = New System.Drawing.Point(94, 324)
+        Me.Label3.Location = New System.Drawing.Point(141, 432)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(71, 29)
+        Me.Label3.Size = New System.Drawing.Size(93, 38)
         Me.Label3.TabIndex = 74
         Me.Label3.Text = "輸入"
         '
@@ -167,17 +180,18 @@ Partial Class Form1
         '
         Me.ListBox1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.ItemHeight = 12
-        Me.ListBox1.Location = New System.Drawing.Point(62, 306)
+        Me.ListBox1.ItemHeight = 16
+        Me.ListBox1.Location = New System.Drawing.Point(93, 408)
+        Me.ListBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(262, 136)
+        Me.ListBox1.Size = New System.Drawing.Size(391, 180)
         Me.ListBox1.TabIndex = 73
         '
         'Form1
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(1200, 600)
         Me.Controls.Add(Me.outputbox2)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.ListBox1)
@@ -190,6 +204,7 @@ Partial Class Form1
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ListBox2)
         Me.Controls.Add(Me.GroupBox1)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "Form1"
         Me.Text = "默契模式"
         Me.ResumeLayout(False)

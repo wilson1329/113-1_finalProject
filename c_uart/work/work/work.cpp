@@ -73,15 +73,15 @@ void UART_Receive(HANDLE hComm, char* buffer, DWORD bufferSize) {
     else {
         // 寫入你的遊戲區 ******************************************
 
-        if (buffer[0] == 'A') {  //模式A
-            //printf("A");
+        if (buffer[0] == 'a') {  //模式A
+            printf("A");
 
-        }else if (buffer[0] == 'B') {  //模式B
-            //printf("B");
+        }else if (buffer[0] == 'b') {  //模式B
+            printf("B");
 
         }
-        else if (buffer[0] == 'C') {  //模式C
-            //printf("C");
+        else if (buffer[0] == 'c') {  //模式C
+            printf("C");
 
         }
 

@@ -1,4 +1,4 @@
 ﻿  work.cpp
-C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\c_uart\C\work\work\work.cpp(60,39): warning C4267: '引數': 將 'size_t' 轉換為 'DWORD'，資料可能遺失
-C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\c_uart\C\work\work\work.cpp(102,10): warning C4101: 'sentData': 未參考的區域變數
-  work.vcxproj -> C:\Users\josh9\OneDrive\桌面\程式設計\期末報告\c_uart\C\work\x64\Debug\work.exe
+C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\work\work.cpp(60,8): warning C4267: '引數': 將 'size_t' 轉換為 'DWORD'，資料可能遺失
+C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\work\work.cpp(101,10): warning C4101: 'sentData': 未參考的區域變數
+  work.vcxproj -> C:\Users\誠\Desktop\113-1_finalProject\c_uart\work\x64\Debug\work.exe
