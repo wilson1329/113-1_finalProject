@@ -1,0 +1,44 @@
+﻿  main.c
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\gmacros.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\gmacros.h(839,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\gatomic.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\gfileutils.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\gmain.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\gtestutils.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\guri.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\glib\glib-autocleanups.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gdk\version\gdkversionmacros.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gobject\gobject.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gobject\gtype.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gobject\gtype.h(877,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gobject\gsignal.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gio\gdatagrambased.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gio\giomodule.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\glib-2.0\gio\gsocketconnectable.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gdk\gdktypes.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\harfbuzz\hb-style.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gdk\gdkevents.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\graphene-1.0\graphene-simd4x4f.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkwidget.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkenums.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkenums.h(927,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtkassistant.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkbuildable.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkbuilder.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtkcellarea.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtkcellrenderer.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtkcellareacontext.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtkcelllayout.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtkcombobox.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtktreeview.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtktreeviewcolumn.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtktreesortable.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\deprecated\gtktreemodelfilter.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtklistbase.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\print\gtkprintsettings.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\print\gtkprintoperation.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkrecentmanager.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtktextiter.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtktextchild.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+C:\Users\誠\Desktop\113-1_finalProject\cpp gtk version\Stellar Blitz\Stellar Blitz\main.c(179,5): warning C4996: 'gtk_widget_show': is deprecated. Use 'gtk_widget_set_visible or gtk_window_present' instead
+  Stellar Blitz.vcxproj -> C:\Users\誠\Desktop\113-1_finalProject\cpp gtk version\Stellar Blitz\x64\Debug\Stellar Blitz.exe

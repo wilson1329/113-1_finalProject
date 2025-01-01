@@ -6,3 +6,10 @@
 
 原則上使用虛擬comport 是上傳的
 否則透過這個網址下載: https://eterlogic.com/Products.VSPE_Download.html
+=======
+python小遊戲1
+  -血量系統
+  -受擊短暫無敵調整
+  -得分系統
+  
+程式已完成1/1
