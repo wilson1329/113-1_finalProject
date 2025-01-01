@@ -40,5 +40,6 @@ C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\print\gtkprintoperation.h(1,1):
 C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtkrecentmanager.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
 C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtktextiter.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
 C:\gtk-build\gtk\x64\release\include\gtk-4.0\gtk\gtktextchild.h(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
-C:\Users\誠\Desktop\113-1_finalProject\cpp gtk version\Stellar Blitz\Stellar Blitz\main.c(179,5): warning C4996: 'gtk_widget_show': is deprecated. Use 'gtk_widget_set_visible or gtk_window_present' instead
+C:\Users\誠\Desktop\113-1_finalProject\cpp gtk version\Stellar Blitz\Stellar Blitz\main.c(189,5): warning C4996: 'gtk_widget_show': is deprecated. Use 'gtk_widget_set_visible or gtk_window_present' instead
+  LINK : 最後的累加連結找不到或未建置 C:\Users\誠\Desktop\113-1_finalProject\cpp gtk version\Stellar Blitz\x64\Debug\Stellar Blitz.exe，正在執行完整連結
   Stellar Blitz.vcxproj -> C:\Users\誠\Desktop\113-1_finalProject\cpp gtk version\Stellar Blitz\x64\Debug\Stellar Blitz.exe
